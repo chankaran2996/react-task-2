@@ -1,31 +1,41 @@
 import React, { useState } from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import ProductList from "./components/ProductList";
-import CartModal from "./components/CartModal";
+import CartPage from "./components/CartPage";
 
 function App() {
   const [cart, setCart] = useState([]);
-  const [isCartOpen, setIsCartOpen] = useState(false);
 
   const addToCart = (product) => {
-    if(cart.includes(product)){
-      alert("Item already added to the cart")
-    }else{
-      setCart([...cart, product]);
+    const existingItem = cart.find((item) => item.id === product.id);
+    if (existingItem) {
+      setCart(cart.map((item) => 
+        item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
+      ));
+    } else {
+      setCart([...cart, { ...product, quantity: 1 }]);
     }
-    
   };
 
-  const removeFromCart = (index) => {
-    setCart(cart.filter((item, i) => i !== index));
+  const updateQuantity = (index, newQuantity) => {
+    if (newQuantity <= 0) {
+      setCart(cart.filter((_, i) => i !== index)); // Remove item if quantity is 0
+    } else {
+      setCart(cart.map((item, i) => 
+        i === index ? { ...item, quantity: newQuantity } : item
+      ));
+    }
   };
 
   return (
-    <div>
-      <Navbar cartCount={cart.length} openCart={() => setIsCartOpen(true)} />
-      <ProductList addToCart={addToCart} />
-      <CartModal isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} setIsCartOpen={setIsCartOpen} cart={cart} removeFromCart={removeFromCart} />
-    </div>
+    <Router>
+      <Navbar cartCount={cart.length} />
+      <Routes>
+        <Route path="/" element={<ProductList addToCart={addToCart} />} />
+        <Route path="/cart" element={<CartPage cart={cart} updateQuantity={updateQuantity} />} />
+      </Routes>
+    </Router>
   );
 }
 

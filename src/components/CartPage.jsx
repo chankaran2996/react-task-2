@@ -6,6 +6,15 @@ const CartPage = ({ cart, updateQuantity }) => {
     return cart.reduce((total, item) => total + item.price * item.quantity, 0).toFixed(2);
   };
 
+  const getDicount = () => {
+    return ((cart.reduce((total, item) => total + item.price * item.quantity, 0))/10).toFixed(2) ;
+  }
+
+  const getFinalPrice = () => {
+    const amt = cart.reduce((total, item) => total + item.price * item.quantity, 0).toFixed(2);
+    return (amt-((amt/10).toFixed(2))).toFixed(2);
+  }
+
   return (
     <div className="p-6">
       <h1 className="text-2xl font-bold mb-4">Shopping Cart</h1>
@@ -36,6 +45,8 @@ const CartPage = ({ cart, updateQuantity }) => {
           ))}
 
           <h2 className="text-xl font-bold mt-4">Total: ${getTotalAmount()}</h2>
+          <h2 className="text-xl font-bold mt-4">Discount of 10% ${getDicount()}</h2>
+          <h2 className="text-xl font-bold mt-4">Final price ${getFinalPrice()}</h2>
         </div>
       )}
     </div>
