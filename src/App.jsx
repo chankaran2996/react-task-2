@@ -32,7 +32,7 @@ function App() {
     <Router>
       <Navbar cartCount={cart.length} />
       <Routes>
-        <Route path="/" element={<ProductList addToCart={addToCart} />} />
+        <Route path="/" element={<ProductList addToCart={addToCart} cart={cart} setCart={setCart} />} />
         <Route path="/cart" element={<CartPage cart={cart} updateQuantity={updateQuantity} />} />
       </Routes>
     </Router>
